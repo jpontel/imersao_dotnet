@@ -31,3 +31,4 @@
 /Users/admin/Desktop/Repository/imersao_estagio/API/obj/Debug/net9.0/API.pdb
 /Users/admin/Desktop/Repository/imersao_estagio/API/obj/Debug/net9.0/API.genruntimeconfig.cache
 /Users/admin/Desktop/Repository/imersao_estagio/API/obj/Debug/net9.0/ref/API.dll
+/Users/admin/Desktop/Repository/imersao_estagio/API/obj/Debug/net9.0/API.sourcelink.json
