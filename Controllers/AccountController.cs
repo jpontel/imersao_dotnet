@@ -2,13 +2,14 @@ using System.Security.Cryptography;
 using System.Text;
 using API.Data;
 using API.DTOs;
+using API.Interfaces;
 using API.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers;
 
-public class AccountController(DataContext context) : BaseApiController
+public class AccountController(DataContext context, ITokenService tokenService) : BaseApiController
 {
     [HttpPost("register")]
     public async Task<ActionResult<AppUser>> Register(RegisterDto registerDto)
@@ -25,8 +26,11 @@ public class AccountController(DataContext context) : BaseApiController
         };
         context.Users.Add(user);
         await context.SaveChangesAsync();
-        
-        return user;
+
+        return new UserDto
+        {
+            Username = user.UserName,
+        };
     }
 
     [HttpPost("login")]
