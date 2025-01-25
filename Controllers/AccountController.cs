@@ -35,10 +35,10 @@ public class AccountController(DataContext context) : BaseApiController
         var user = await context.Users.SingleOrDefaultAsync(x => x.UserName == loginDto.Username.ToLower());
         if (user == null) return Unauthorized("Invalid username or password");
         
-        using var hmac = new HMACSHA512();
+        using var hmac = new HMACSHA512(user.PasswordSalt);
         var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password));
         
-        for (int i = 0; i < computedHash.Length; i++)
+        for (var i = computedHash.Length - 1; i >= 0; i--)
         {
             if (computedHash[i] != user.PasswordHash[i]) return Unauthorized("Invalid password");
         }
