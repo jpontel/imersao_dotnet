@@ -38,9 +38,9 @@ public class AccountController(DataContext context) : BaseApiController
         using var hmac = new HMACSHA512(user.PasswordSalt);
         var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password));
         
-        for (var i = computedHash.Length - 1; i >= 0; i--)
+        if (computedHash.Where((t, i) => t != user.PasswordHash[i]).Any())
         {
-            if (computedHash[i] != user.PasswordHash[i]) return Unauthorized("Invalid password");
+            return Unauthorized("Invalid password");
         }
 
         return user;
