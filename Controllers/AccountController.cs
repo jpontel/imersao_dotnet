@@ -12,7 +12,7 @@ namespace API.Controllers;
 public class AccountController(DataContext context, ITokenService tokenService) : BaseApiController
 {
     [HttpPost("register")]
-    public async Task<ActionResult<AppUser>> Register(RegisterDto registerDto)
+    public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
     {
         if (await UserExists(registerDto.Username)) return BadRequest("Username is taken!!!");
         
@@ -30,11 +30,12 @@ public class AccountController(DataContext context, ITokenService tokenService) 
         return new UserDto
         {
             Username = user.UserName,
+            Token = tokenService.CreateToken(user),
         };
     }
 
     [HttpPost("login")]
-    public async Task<ActionResult<AppUser>> Login(LoginDto loginDto)
+    public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
     {
         var user = await context.Users.SingleOrDefaultAsync(x => x.UserName == loginDto.Username.ToLower());
         if (user == null) return Unauthorized("Invalid username or password");
@@ -47,7 +48,11 @@ public class AccountController(DataContext context, ITokenService tokenService) 
             return Unauthorized("Invalid password");
         }
 
-        return user;
+        return new UserDto
+        {
+            Username = user.UserName,
+            Token = tokenService.CreateToken(user),
+        };
     }
 
     private async Task<bool> UserExists(string username)
